@@ -1,0 +1,92 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+
+<h2>Tasks</h2>
+
+Enter a task title <input type="text" id="titleTextBox" name="title" />
+<button id="btnSave">Save</button>
+
+<ul id="tasksList">
+</ul>
+
+</body>
+
+</html>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+
+  <script>
+
+  var btnSave = document.querySelector("#btnSave")
+
+  btnSave.addEventListener('click',function(){
+
+      let titleTextBox = document.querySelector("#titleTextBox")
+      console.log(titleTextBox.value)
+
+      let params = {title :titleTextBox.value}
+      console.log(params)
+
+      console.log(JSON.stringify(params))
+
+      //  {"title": "Wash the car"}
+
+      // fetch request to post JSON to the POST URL
+
+      fetch('http://localhost:3001/task', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+}).then(function(response){
+  return response.json()
+}).then(function(json){
+
+      let success = json.success
+
+      if(success) {
+        getAllTasks()
+      }
+
+})
+
+  })
+
+
+function getAllTasks() {
+
+  fetch('http://localhost:3001/tasks')
+.then(function(response) {
+  return response.json()
+}).then(function(json) {
+
+    // display on the screen
+    let tasks = json.tasks
+
+    var taskList = document.querySelector("#tasksList")
+
+    for(var i = 0; i<tasks.length;i++) {
+
+          let li = document.createElement("li")
+          li.innerHTML = tasks[i].title
+
+          taskList.appendChild(li)
+
+    }
+
+}).catch(function(ex) {
+  console.log('parsing failed', ex)
+})
+
+}
+
+getAllTasks()
+
+
+  </script>
